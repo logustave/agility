@@ -29,8 +29,8 @@ class UpdateAdministratorRequest extends FormRequest
         return [
             'lastname' => ['nullable', 'max:100'],
             'firstname' => ['nullable', 'max:100'],
-            'email' => ['nullable', 'email', new UserUniqueNewValue('email', $administrator?->email, $administrator?->user_id)],
-            'contact' => ['nullable', new UserUniqueNewValue('contact', $administrator?->contact, $administrator?->user_id)],
+            'email' => ['nullable', 'email', new UserUniqueNewValue('email', $administrator?->user?->email, $administrator?->user?->user_id)],
+            'contact' => ['nullable', new UserUniqueNewValue('contact', $administrator?->user?->contact, $administrator?->user?->user_id)],
             'password' => ['nullable', Password::min(8),'confirmed'],
             'photo' => ['nullable']
         ];

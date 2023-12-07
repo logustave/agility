@@ -73,7 +73,7 @@ class ResourceController extends Controller
     public function update(UpdateResourceRequest $request, Resource $resource): RedirectResponse
     {
         $resource->update($request->resourceAttributes());
-        return redirect()->route('resources.show', ['id' => $resource->id])->with('flash.success', 'Operation successfully completed');
+        return redirect()->route('resources.index')->with('success', 'Operation successfully completed');
     }
 
     /**

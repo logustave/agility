@@ -72,9 +72,7 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task): RedirectResponse
     {
         $task->update($request->taskAttributes());
-        return redirect()->route('tasks.show', [
-            'id' => $task->id
-        ])->with('success', 'Operation effectuée');
+        return redirect()->route('tasks.index')->with('success', 'Operation effectuée');
     }
 
     /**

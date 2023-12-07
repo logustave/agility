@@ -86,7 +86,7 @@ class AdministratorController extends Controller
     {
         $administrator->user()->update($request->userAttributes());
         return redirect()->route('administrators.show', [
-            'id' => $administrator->id
+            'administrator' => $administrator->id
         ])->with('flash.success', 'opération éffectuée');
     }
 

@@ -6,6 +6,7 @@ use App\Http\Requests\ProjectRequest\StoreProjectRequest;
 use App\Http\Requests\ProjectRequest\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -16,11 +17,13 @@ class ProjectController extends Controller
 {
     private User $user;
     private Project $project;
+    private Status $status;
 
-    public function __construct(User $user, Project $project)
+    public function __construct(User $user, Project $project, Status $status)
     {
         $this->user = $user;
         $this->project = $project;
+        $this->status = $status;
     }
 
     /**
@@ -28,10 +31,11 @@ class ProjectController extends Controller
      */
     public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $status = $this->status::all();
         $projects = ProjectResource::collection(
             $this->project::query()->paginate(config('app.default_pagination_size'))
         );
-        return view('pages.pages.project.index', compact('projects'));
+        return view('pages.pages.project.index', compact('projects', 'status'));
     }
 
     /**
@@ -65,8 +69,9 @@ class ProjectController extends Controller
      */
     public function edit(Project $project): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
+        $status = $this->status::all();
         $project = new ProjectResource($project);
-        return view('projects.edit', compact('project'));
+        return view('pages.pages.project.index', compact('project', 'status'));
     }
 
     /**
@@ -75,9 +80,7 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
     {
         $project->update($request->projectAttributes());
-        return redirect()->route('projects.show', [
-            'id' => $project->id
-        ])->with('flash.success', 'opération éffectuée');
+        return redirect()->route('projects.index')->with('success', 'opération éffectuée');
     }
 
     /**

@@ -20,7 +20,7 @@
     <section class="section">
         <div class="row">
 
-            <div class="col-lg-6">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ isset($project) ? 'Modifier le Projet' : 'Formulaire de Création des Projets' }}</h5>
@@ -30,19 +30,21 @@
                                 @method('PUT')
                             @endif
 
-                            <!-- Fields for the project model -->
-                            <div class="row mb-3">
-                                <label for="user_id" class="col-sm-4 col-form-label">Porteur de Projet :</label>
-                                <div class="col-sm-8">
-                                    <!-- You might want to replace this with a dropdown to select the project holder -->
-                                    <input type="text" name="user_id" id="user_id" class="form-control" value="{{ isset($project) ? $project->user_id : old('user_id') }}">
-                                </div>
-                            </div>
-
                             <div class="row mb-3">
                                 <label for="status_id" class="col-sm-4 col-form-label">Statut :</label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="status_id" id="status_id" class="form-control" value="{{ isset($project) ? $project->status_id : old('status_id') }}">
+                                    <select name="status_id" id="status_id" class="form-select">
+                                        @if(isset($project))
+                                            <option value="{{ $project->status?->id }}">{{ $project->status?->label }}</option>
+                                        @endif
+                                        @foreach($status as $item)
+                                            @if(isset($project) && $project->status?->id == $item->id)
+                                                @php continue @endphp
+                                            @else
+                                                <option value="{{ $item->id }}">{{ $item->label }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
@@ -68,17 +70,9 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="is_validate" class="col-sm-4 col-form-label">Validation :</label>
-                                <div class="col-sm-8">
-                                    <!-- You might want to replace this with a checkbox for validation status -->
-                                    <input type="text" name="is_validate" id="is_validate" class="form-control" value="{{ isset($project) ? $project->is_validate : old('is_validate') }}">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
                                 <label for="start_date" class="col-sm-4 col-form-label">Date de début :</label>
                                 <div class="col-sm-8">
-                                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ isset($project) ? $project->start_date : old('start_date') }}">
+                                    <input type="date" name="start_date"  id="start_date" class="form-control" value="{{ \Carbon\Carbon::parse(isset($project) ? $project->start_date : old('start_date'))->format('d/m/y') }}">
                                 </div>
                             </div>
 
@@ -100,56 +94,65 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Liste des Projets</h5>
-                        @if ($projects->isEmpty())
-                            <p>Aucun administrateur trouvé.</p>
-                        @else
-                            <table class="table">
-                                <thead>
+            @if(isset($projects))
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Liste des Projets</h5>
+                            @if ($projects->isEmpty())
+                                <p>Aucun administrateur trouvé.</p>
+                            @else
+                                <table class="table">
+                                    <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Nom</th>
-                                        <th>Email</th>
-                                        <th>Actions</th>
+                                        <th>Porteur de projet</th>
+                                        <th>Label</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Debut</th>
+                                        <th>Fin</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </thead>
+                                    <tbody>
 
-                                    @foreach ($projects as $administrator)
+                                    @foreach ($projects as $project)
                                         <tr>
-                                            <td>{{ $administrator->id }}</td>
-                                            <td>{{ $administrator->user->lastname }}</td>
-                                            <td>{{ $administrator->user->email }}</td>
+                                            <td>{{ $project->id }}</td>
+                                            <td>{{ $project->user->email }}</td>
+                                            <td>{{ $project->label }}</td>
+                                            <td>{{ $project->description }}</td>
+                                            <td>{{ $project->status->label }}</td>
+                                            <td>{{ $project->start_date }}</td>
+                                            <td>{{ $project->end_date }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#editModal{{ $administrator->id }}">
-                                                    Edit
-                                                </button>
+                                                {{--                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"--}}
+                                                {{--                                                    data-bs-target="#editModal{{ $project->id }}">--}}
+                                                {{--                                                    Edit--}}
+                                                {{--                                                </button>--}}
+                                                <a class="btn btn-sm btn-primary" href="{{ route('projects.edit', $project->id) }}">Edit</a>
                                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal{{ $administrator->id }}">
+                                                        data-bs-target="#deleteModal{{ $project->id }}">
                                                     Delete
                                                 </button>
                                             </td>
                                         </tr>
 
                                         <!-- Edit Modal -->
-                                        <div class="modal fade" id="editModal{{ $administrator->id }}" tabindex="-1"
-                                            aria-labelledby="editModalLabel{{ $administrator->id }}">
+                                        <div class="modal fade" id="editModal{{ $project->id }}" tabindex="-1"
+                                             aria-labelledby="editModalLabel{{ $project->id }}">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="editModalLabel{{ $administrator->id }}">
+                                                        <h5 class="modal-title" id="editModalLabel{{ $project->id }}">
                                                             Modifier l'administrateur</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <!-- Contenu du formulaire d'édition -->
                                                         <form
-                                                            action="{{ route('projectHolders.update', $administrator->id) }}"
+                                                            action="{{ route('projects.update', $project->id) }}"
                                                             method="POST">
                                                             @csrf
                                                             @method('PUT')
@@ -157,43 +160,43 @@
                                                             <div class="mb-3">
                                                                 <label for="firstname" class="form-label">Prénom :</label>
                                                                 <input type="text" class="form-control" id="firstname"
-                                                                    name="firstname"
-                                                                    value="{{ $administrator->user->firstname }}">
+                                                                       name="firstname"
+                                                                       value="{{ $project->user->firstname }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="lastname" class="form-label">Nom :</label>
                                                                 <input type="text" class="form-control" id="lastname"
-                                                                    name="lastname"
-                                                                    value="{{ $administrator->user->lastname }}">
+                                                                       name="lastname"
+                                                                       value="{{ $project->user->lastname }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="contact" class="form-label">Contact :</label>
                                                                 <input type="text" class="form-control" id="contact"
-                                                                    name="contact"
-                                                                    value="{{ $administrator->user->contact }}">
+                                                                       name="contact"
+                                                                       value="{{ $project->user->contact }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="photo" class="form-label">Photo :</label>
                                                                 <input type="file" class="form-control" id="photo"
-                                                                    name="photo">
+                                                                       name="photo">
                                                                 <!-- Affichez l'image actuelle -->
-                                                                @if ($administrator->user->photo)
-                                                                    <img src="{{ asset('path/to/your/photos/' . $administrator->user->photo) }}"
-                                                                        alt="Current Photo" class="mt-2"
-                                                                        style="max-width: 100px;">
+                                                                @if ($project->user->photo)
+                                                                    <img src="{{ asset('path/to/your/photos/' . $project->user->photo) }}"
+                                                                         alt="Current Photo" class="mt-2"
+                                                                         style="max-width: 100px;">
                                                                 @endif
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="email" class="form-label">Email :</label>
                                                                 <input type="email" class="form-control" id="email"
-                                                                    name="email"
-                                                                    value="{{ $administrator->user->email }}">
+                                                                       name="email"
+                                                                       value="{{ $project->user->email }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="password" class="form-label">Mot de passe
                                                                     :</label>
                                                                 <input type="password" class="form-control"
-                                                                    id="password" name="password">
+                                                                       id="password" name="password">
                                                                 <!-- Ajoutez une option pour modifier le mot de passe si nécessaire -->
                                                             </div>
 
@@ -208,46 +211,47 @@
                                         </div>
 
                                         <!-- Delete Modal -->
-                                        <div class="modal fade" id="deleteModal{{ $administrator->id }}" tabindex="-1"
-                                            aria-labelledby="deleteModalLabel{{ $administrator->id }}">
+                                        <div class="modal fade" id="deleteModal{{ $project->id }}" tabindex="-1"
+                                             aria-labelledby="deleteModalLabel{{ $project->id }}">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title"
-                                                            id="deleteModalLabel{{ $administrator->id }}">Supprimer
+                                                            id="deleteModalLabel{{ $project->id }}">Supprimer
                                                             l'administrateur</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         Êtes-vous sûr de vouloir supprimer l'administrateur
-                                                        "{{ $administrator->user->lastname }}" ?
+                                                        "{{ $project->user->lastname }}" ?
                                                     </div>
                                                     <div class="modal-footer">
                                                         <form
-                                                            action="{{ route('projectHolders.destroy', $administrator->id) }}"
+                                                            action="{{ route('projects.destroy', $project->id) }}"
                                                             method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Annuler</button>
+                                                                    data-bs-dismiss="modal">Annuler</button>
                                                             <button type="submit"
-                                                                class="btn btn-danger">Supprimer</button>
+                                                                    class="btn btn-danger">Supprimer</button>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
 
-                            <!-- Affichage de la pagination -->
-                            {{ $projects->links() }}
-                        @endif
+                                <!-- Affichage de la pagination -->
+                                {{ $projects->links() }}
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </section>
 @endsection

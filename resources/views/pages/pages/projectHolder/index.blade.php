@@ -44,12 +44,12 @@
                                     <input type="text" name="contact" id="contact" class="form-control">
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <label for="photo" class="col-sm-4 col-form-label">Photo :</label>
-                                <div class="col-sm-8">
-                                    <input type="file" name="photo" id="photo" class="form-control">
-                                </div>
-                            </div>
+{{--                            <div class="row mb-3">--}}
+{{--                                <label for="photo" class="col-sm-4 col-form-label">Photo :</label>--}}
+{{--                                <div class="col-sm-8">--}}
+{{--                                    <input type="file" name="photo" id="photo" class="form-control">--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="row mb-3">
                                 <label for="email" class="col-sm-4 col-form-label">Email :</label>
                                 <div class="col-sm-8">
@@ -60,6 +60,12 @@
                                 <label for="password" class="col-sm-4 col-form-label">Mot de passe :</label>
                                 <div class="col-sm-8">
                                     <input type="password" name="password" id="password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="password" class="col-sm-4 col-form-label">Confirmer votre mot de passe :</label>
+                                <div class="col-sm-8">
+                                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
                                 </div>
                             </div>
                             <!-- Bouton de soumission -->
@@ -147,28 +153,10 @@
                                                                     value="{{ $administrator->user->contact }}">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="photo" class="form-label">Photo :</label>
-                                                                <input type="file" class="form-control" id="photo"
-                                                                    name="photo">
-                                                                <!-- Affichez l'image actuelle -->
-                                                                @if ($administrator->user->photo)
-                                                                    <img src="{{ asset('path/to/your/photos/' . $administrator->user->photo) }}"
-                                                                        alt="Current Photo" class="mt-2"
-                                                                        style="max-width: 100px;">
-                                                                @endif
-                                                            </div>
-                                                            <div class="mb-3">
                                                                 <label for="email" class="form-label">Email :</label>
                                                                 <input type="email" class="form-control" id="email"
                                                                     name="email"
                                                                     value="{{ $administrator->user->email }}">
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="password" class="form-label">Mot de passe
-                                                                    :</label>
-                                                                <input type="password" class="form-control"
-                                                                    id="password" name="password">
-                                                                <!-- Ajoutez une option pour modifier le mot de passe si nécessaire -->
                                                             </div>
 
                                                             <!-- ... (ajoutez d'autres champs) ... -->

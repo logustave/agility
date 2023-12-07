@@ -84,9 +84,7 @@ class EmployeeController extends Controller
     public function update(UpdateEmployeeRequest $request, Employee $employee): RedirectResponse
     {
         $employee->user()->update($request->userAttributes());
-        return redirect()->route('employees.show', [
-            'id' => $employee->id
-        ])->with('flash.success', 'opération éffectuée');
+        return redirect()->route('employees.index')->with('success', 'opération éffectuée');
     }
 
     /**

@@ -37,7 +37,7 @@ class StoreProjectRequest extends FormRequest
     {
         $attributes = ['label', 'description', 'budget', 'start_date', 'end_date','user_id', 'status_id'];
         return $this
-            ->merge(['user_id' => Auth::id(), 'status_id' => Status::getLabel(Status::NEW->value)['id']])
+            ->merge(['user_id' => Auth::id()])
             ->only($attributes);
     }
 }

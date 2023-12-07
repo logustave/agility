@@ -57,7 +57,7 @@ class ProjectHolderController extends Controller
 
         $this->projectHolder::create($request->projectHolderAttributes($user->id));
 
-        return redirect()->route('projectHolders.index')->with('success', 'opération éffectuée');
+        return redirect()->route('project-holders.index')->with('success', 'opération éffectuée');
     }
 
     /**
@@ -84,9 +84,7 @@ class ProjectHolderController extends Controller
     public function update(UpdateProjectHolderRequest $request, ProjectHolder $projectHolder): RedirectResponse
     {
         $projectHolder->user()->update($request->userAttributes());
-        return redirect()->route('projectHolders.show', [
-            'id' => $projectHolder->id
-        ])->with('success', 'opération éffectuée');
+        return redirect()->route('project-holders.index')->with('success', 'opération éffectuée');
     }
 
     /**
@@ -96,6 +94,6 @@ class ProjectHolderController extends Controller
     {
         $projectHolder->delete();
         $projectHolder->user()->delete();
-        return redirect()->route('projectHolders.index')->with('flash.success', 'opération éffectuée');
+        return redirect()->route('project-holders.index')->with('flash.success', 'opération éffectuée');
     }
 }

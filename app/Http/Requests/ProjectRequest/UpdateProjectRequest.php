@@ -33,7 +33,7 @@ class UpdateProjectRequest extends FormRequest
             'start_date' => ['nullable'],
             'end_date' => ['nullable'],
             'is_validate' => ['nullable','boolean'],
-            'status_id' => ['nullable','exists']
+            'status_id' => ['nullable','exists:statuses,id']
         ];
     }
 

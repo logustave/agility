@@ -25,12 +25,12 @@ class UpdateProjectHolderRequest extends FormRequest
      */
     public function rules(): array
     {
-        $projectHolder = $this->route()->parameter('projectHolder');
+        $projectHolder = $this->route()->parameter('project_holder');
         return [
             'lastname' => ['nullable', 'max:100'],
             'firstname' => ['nullable', 'max:100'],
-            'email' => ['nullable', 'email', new UserUniqueNewValue('email', $projectHolder?->email, $projectHolder?->user_id)],
-            'contact' => ['nullable', new UserUniqueNewValue('contact', $projectHolder?->contact, $projectHolder?->user_id)],
+            'email' => ['nullable', 'email', new UserUniqueNewValue('email', $projectHolder?->user?->email, $projectHolder?->user?->user_id)],
+            'contact' => ['nullable', new UserUniqueNewValue('contact', $projectHolder?->user?->contact, $projectHolder?->user?->user_id)],
             'password' => ['nullable', Password::min(8),'confirmed'],
             'photo' => ['nullable']
         ];

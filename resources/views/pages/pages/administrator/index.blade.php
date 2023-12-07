@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="password" class="col-sm-4 col-form-label">Confirmer votre mot de passe :</label>
+                                <label for="password_confirmation" class="col-sm-4 col-form-label">Confirmer votre mot de passe :</label>
                                 <div class="col-sm-8">
                                     <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
                                 </div>
@@ -228,5 +228,6 @@
                     </div>
                 </div>
             </div>
+        </div>
     </section>
 @endsection
